@@ -1,3 +1,6 @@
+// License GPLv3 - https://www.gnu.org/licenses/gpl-3.0.txt
+
+
 const ICON_PATHS = {
     active: { "32": "icons/unicorn-32.png" },
     inactive: { "32": "icons/horse-32.png" }
