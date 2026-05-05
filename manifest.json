@@ -12,8 +12,8 @@
   ],
   "browser_action": {
     "default_icon": {
-      "32": "icons/color-smiley-32.png",
-      "48": "icons/color-smiley48.png"
+      "32": "icons/unicorn-32.png",
+      "48": "icons/unicorn-48.png"
     }
   }
 }

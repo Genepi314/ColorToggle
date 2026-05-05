@@ -1,35 +1,43 @@
-async function toggleColors() { 
-    console.log("Entered toggleColors ! ");
-    
-    let settings = await browser.browserSettings.overrideDocumentColors.get({});
-    let currentColorState = settings.value; 
-    
-    console.log(`Got current color state: ${currentColorState}`);
+const ICON_PATHS = {
+    active: { "32": "icons/unicorn-32.png" },
+    inactive: { "32": "icons/horse-32.png" }
+};
 
-    if (currentColorState !== "always") {
-        await browser.browserSettings.overrideDocumentColors.set({ value: "always" });
-    } else {
-        await browser.browserSettings.overrideDocumentColors.set({ value: "never" });
-    }
+async function toggleColors() {
+    const settings = await browser.browserSettings.overrideDocumentColors.get({});
+    const nextValue = (settings.value === "always") ? "never" : "always";
+    
+    await browser.browserSettings.overrideDocumentColors.set({ value: nextValue });
+    updateIcon(nextValue)
 }
 
-async function adaptIcon() {
-    let settings = await browser.browserSettings.overrideDocumentColors.get({});
-    let currentColorState = settings.value; 
-    let path;
-
-    console.log("in adaptIcon")
-
-    if (currentColorState !== "always") {
-        path = {"32": "icons/smiley-32.png"}
-    }
-    else {
-        path = {"32": "icons/color-smiley-32.png"}
-    }
-
+function updateIcon(colorSettingsValue) {
+    const path = (colorSettingsValue === "always") 
+        ? ICON_PATHS.active 
+        : ICON_PATHS.inactive;
+    
     browser.browserAction.setIcon({ path });
 }
 
-adaptIcon()
+
+// Init
+
+browser.browserSettings.overrideDocumentColors.get({}).then((settings) => {
+    updateIcon(settings.value);
+});
+
+// Listen to changes
+
 browser.browserAction.onClicked.addListener(toggleColors);
-browser.browserSettings.overrideDocumentColors.onChange.addListener(adaptIcon)
+
+browser.tabs.onActivated.addListener(async () => {
+    const settings = await browser.browserSettings.overrideDocumentColors.get({});
+    updateIcon(settings.value);
+});
+
+browser.windows.onFocusChanged.addListener(async () => {
+    const settings = await browser.browserSettings.overrideDocumentColors.get({});
+    updateIcon(settings.value);
+});
+
+
