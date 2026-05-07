@@ -19,7 +19,7 @@ function updateIcon(colorSettingsValue) {
         ? ICON_PATHS.active 
         : ICON_PATHS.inactive;
     
-    browser.browserAction.setIcon({ path });
+    browser.action.setIcon({ path });
 }
 
 
@@ -31,7 +31,7 @@ browser.browserSettings.overrideDocumentColors.get({}).then((settings) => {
 
 // Listen to changes
 
-browser.browserAction.onClicked.addListener(toggleColors);
+browser.action.onClicked.addListener(toggleColors);
 
 browser.tabs.onActivated.addListener(async () => {
     const settings = await browser.browserSettings.overrideDocumentColors.get({});
